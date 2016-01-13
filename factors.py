@@ -20,21 +20,21 @@ class MainPage(webapp2.RequestHandler):
 class Factors(webapp2.RequestHandler):
     def post(self):
         num = int(cgi.escape(self.request.get('number')))
-        continueSearching = True
         factors = []
         for i in range(1, num):
             if num % i == 0:
-                factors.append(i)
                 higherFactor = num / i;
-                factors.append(higherFactor)
+                factors.extend([i, higherFactor])
             # at a certain point 'i' will start to cross over into factors we've already found, we need to stop before then.
             if (i + 1) >= factors[len(factors) - 1]:
                 # The last elememt will always have the most recent higher factor to check against.
                 break
 
-        logging.info(factors)
-        self.response.write('<html><body>Your number is: ')
-        self.response.write(num)
+        # sorting the list of factors
+        factors.sort()
+
+        self.response.write('<html><body>The factors are: ')
+        self.response.write(factors)
         self.response.write('</body></html>')
 
 app = webapp2.WSGIApplication([
