@@ -1,6 +1,14 @@
+import os
+
 import cgi
+import jinja2
 import webapp2
 import logging
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 MAIN_PAGE_HTML = """\
 <html>
@@ -33,9 +41,8 @@ class Factors(webapp2.RequestHandler):
         # sorting the list of factors
         factors.sort()
 
-        self.response.write('<html><body>The factors are: ')
-        self.response.write(factors)
-        self.response.write('</body></html>')
+        template = JINJA_ENVIRONMENT.get_template('result_factors.html')
+        self.response.write(template.render({"result" : factors}))
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
