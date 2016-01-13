@@ -10,20 +10,10 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-MAIN_PAGE_HTML = """\
-<html>
-  <body>
-    <form action="/result" method="post">
-      <div><input type="text" name="number"><br></div>
-      <div><input type="submit" value="Find Factors"></div>
-    </form>
-  </body>
-</html>
-"""
-
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.write(MAIN_PAGE_HTML)
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render())
 
 class Factors(webapp2.RequestHandler):
     def post(self):
