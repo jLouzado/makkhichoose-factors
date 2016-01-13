@@ -1,10 +1,11 @@
 import cgi
 import webapp2
+import logging
 
 MAIN_PAGE_HTML = """\
 <html>
   <body>
-    <form action="/factors" method="post">
+    <form action="/result" method="post">
       <div><input type="text" name="number"><br></div>
       <div><input type="submit" value="Find Factors"></div>
     </form>
@@ -18,11 +19,25 @@ class MainPage(webapp2.RequestHandler):
 
 class Factors(webapp2.RequestHandler):
     def post(self):
+        num = int(cgi.escape(self.request.get('number')))
+        continueSearching = True
+        factors = []
+        for i in range(1, num):
+            if num % i == 0:
+                factors.append(i)
+                higherFactor = num / i;
+                factors.append(higherFactor)
+            # at a certain point 'i' will start to cross over into factors we've already found, we need to stop before then.
+            if (i + 1) >= factors[len(factors) - 1]:
+                # The last elememt will always have the most recent higher factor to check against.
+                break
+
+        logging.info(factors)
         self.response.write('<html><body>Your number is: ')
-        self.response.write(cgi.escape(self.request.get('number')))
+        self.response.write(num)
         self.response.write('</body></html>')
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/factors', Factors),
+    ('/result', Factors),
 ], debug=True)
